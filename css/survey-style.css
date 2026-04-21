@@ -1,0 +1,51 @@
+:root {
+    /* Remove slider progression color */
+    --sjs-postcss-fix-slider-path-color-filled: #d9d9d9;
+    --sjs-postcss-fix-slider-path-color: #d9d9d9;
+
+    /* Change slider thumb color and size */
+    --sjs-postcss-fix-slider-thumb-color: #474747;
+    --lbr-slider-thumb-dot-width: 4px;
+    --lbr-slider-thumb-dot-height: 4px;
+    --lbr-slider-thumb-dot-width-hovering: 8px;
+    --lbr-slider-thumb-dot-height-hovering: 8px;
+}
+
+/* Center header */
+.sd-header__text {
+    text-align: center;
+}
+
+/* Center footer (navigation buttons) */
+.sd-footer {
+    justify-content: center;
+}
+
+/* Make next and prev buttons the same size */
+/* TODO: fix this better */
+.sd-body__navigation .sd-btn {
+    min-width: 200px;
+}
+
+/* Numbered list with bold numbers */
+ol.bold-numbers > li::marker {
+    font-weight: bold;
+}
+
+/* Callout box that matches the style of a SurveyJS panel. Useful for highlighting instructions. */
+.callout-box {
+    display: flex;
+    border-radius: var(--sjs-questionpanel-cornerRadius, var(--sjs-corner-radius, 4px));
+    box-sizing: border-box;
+    padding: 1.5rem;
+    background: #f8f8f8;
+    box-shadow: var(--sjs-shadow-small, 0px 1px 2px 0px rgba(0, 0, 0, 0.15));
+}
+
+/* Center lists inside callout boxes */
+.callout-box ul,
+.callout-box ol {
+    padding-left: 1.5rem;
+    margin: 0;
+    display: inline-block;
+}

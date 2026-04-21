@@ -30,13 +30,13 @@ export const config = {
     DEBUG_LOGS: false,
 
     // When enabled, saves data locally
-    DEBUG_SAVE: false
+    DEBUG_SAVE: true
 };
 
 export const videoLists = [
     {
         condition: "control", // The condition name saved in data
-        selectionNum: 3, // How many videos to select from this list
+        selectionNum: 1, // How many videos to select from this list
         shuffle: false, // Whether to shuffle the order of the videos or not (overriden by SHUFFLE_ALL)
         videos: [
             "placeholder_video.mp4",

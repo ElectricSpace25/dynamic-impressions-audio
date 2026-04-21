@@ -111,6 +111,14 @@ const audioCheckTrial = {
 };
 
 
+// --- Initialize Mic ---
+
+const initMicTrial = {
+    type: jsPsychInitializeMicrophone,
+    data: { trial_name: "init_mic" }
+};
+
+
 // --- Fullscreen ---
 
 const fullscreen = {
@@ -148,7 +156,7 @@ function checkFullscreen() {
 // --- Demo trial ---
 
 const demoTrial = {
-    type: jsPsychVideoDescription,
+    type: jsPsychVideoAudioDescription,
     demo: true,
     video_path: "assets/demo.mp4",
     demo_text: "<p>Before we start, let's do a practice trial</p><p>Please pause the video and practice entering words</p><p>The study will begin after this practice trial</p>",
@@ -167,7 +175,7 @@ const startMessageTrial = {
 // --- Video trial ---
 
 const videoTrial = {
-    type: jsPsychVideoDescription,
+    type: jsPsychVideoAudioDescription,
     video_path: jsPsych.timelineVariable("video_path"),
     video_name: jsPsych.timelineVariable("video_name"),
     video_id: jsPsych.timelineVariable("video_id"),
@@ -231,17 +239,18 @@ const videoTimeline = {
 };
 
 timeline.push(
-    browserCheck,
-    checkSafari(),
-    preloadVideos,
+    // browserCheck,
+    // checkSafari(),
+    // preloadVideos,
     // screenerTrial,
-    instructionsTrial,
-    audioCheckTrial,
-    fullscreen,
-    demoTrial,
-    startMessageTrial,
+    // instructionsTrial,
+    // audioCheckTrial,
+    initMicTrial,
+    // fullscreen,
+    // demoTrial,
+    // startMessageTrial,
     videoTimeline,
-    demographicsTrial,
+    // demographicsTrial,
     finishedTrial
 );
 

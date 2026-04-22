@@ -287,6 +287,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                     continueBtn.style.display = "block";
                     continueBtn.addEventListener('click', () => {
                         recorder.pause();
+                        addEvent("final");
                         continueBtn.style.display = "none";
                         videoPlayer.style.display = "none";
                         trialContainer.classList.add("is-centered");
@@ -298,7 +299,6 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                     // Start final recording button
                     recordBtn.addEventListener('click', () => {
                         recorder.resume();
-                        addEvent("final");
                         recordBtn.style.display = "none";
                         waveform.style.display = "block";
                         submitBtn.style.display = "block";

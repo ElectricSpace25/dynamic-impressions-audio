@@ -1,5 +1,5 @@
 // Imports
-import { jsPsych } from "./init.js";
+import { jsPsych, saveAudio} from "./init.js";
 import { config } from "./config.js";
 import * as utils from "./utils.js";
 import * as content from "./content.js";
@@ -181,16 +181,9 @@ const videoTrial = {
     video_id: jsPsych.timelineVariable("video_id"),
     condition: jsPsych.timelineVariable("condition"),
     debug_logs: config.DEBUG_LOGS,
-    on_start: function (trial) {
-        // Parses disruption time if possible
-        if (disruptionLookup != null) {
-            const entry = disruptionLookup[trial.video_name.split("/").pop()];
-            if (entry) {
-                trial.break_start = utils.parseTimeCode(entry.start);
-                trial.break_end = utils.parseTimeCode(entry.end);
-                if (config.DEBUG_LOGS) console.log(`Disruption added: ${trial.break_start} to ${trial.break_end}`);
-            }
-        }
+    on_finish: function(data){
+        const cleanVideoName = data.video.replace(/\.[^/.]+$/, "_");
+        data.response = saveAudio(cleanVideoName, data.response);
     },
     data: { trial_name: "video" }
 };

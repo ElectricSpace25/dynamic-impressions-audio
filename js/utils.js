@@ -34,7 +34,7 @@ export function setupMedia() {
 
         // Timeline variables
         const timelineVariables = chosenVideos.map(video => ({
-            video_name: video,
+            video_name: video.substring(0, video.lastIndexOf('.')),
             video_path: `${config.VIDEO_PATH}/${video}`,
             video_id: originalList.indexOf(video),
             condition: conditionName

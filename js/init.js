@@ -5,9 +5,21 @@ const sessionId = Math.random().toString(36).substring(2) + Date.now().toString(
 
 // Function to save data to server
 function saveData(id, data) {
-    var dataToSend = JSON.stringify({ id: id, filedata: data });
-    var success = navigator.sendBeacon("./php/write_data.php", dataToSend);
+    const dataToSend = JSON.stringify({ id: id, filedata: data });
+    const success = navigator.sendBeacon("./php/write_data.php", dataToSend);
     if (config.DEBUG_LOGS) console.log("Data saved to data/" + id + ": " + success);
+}
+
+// Function to save audio to server
+export function saveAudio(video, data) {
+    const name = `${sessionId}_${video}.webm`;
+    const dataToSend = JSON.stringify({ name: name, filedata: data });
+    fetch('./php/write_audio.php', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: dataToSend
+    });
+    return name;
 }
 
 // Initialize jsPsych and export it
@@ -20,13 +32,13 @@ export const jsPsych = initJsPsych({
                 saveData(`data-${sessionId}`, jsPsych.data.get().csv());
                 jsPsych.abortExperiment(config.COMPLETION_MESSAGE);
                 setTimeout(() => {
-                    window.location.href = config.COMPLETION_LINK;
+                    // window.location.href = config.COMPLETION_LINK;
                 }, 2000);
             }
         } else {
             jsPsych.abortExperiment(config.FAILURE_MESSAGE);
             setTimeout(() => {
-                window.location.href = config.FAILURE_LINK;
+                // window.location.href = config.FAILURE_LINK;
             }, 2000);
         }
     }

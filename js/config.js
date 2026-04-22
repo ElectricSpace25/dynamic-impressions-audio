@@ -30,7 +30,7 @@ export const config = {
     DEBUG_LOGS: false,
 
     // When enabled, saves data locally
-    DEBUG_SAVE: true
+    DEBUG_SAVE: false
 };
 
 export const videoLists = [

@@ -27,23 +27,19 @@
     display: none;
 }
 
-#instructions,
-.notice-text {
+#instructions{
     font-size: calc(18px + 0.25vh);
-}
-
-.notice-text {
-    color: #555;
-    font-style: italic;
-}
-
-.notice-text--warn {
-    color: red;
-    font-style: normal;
 }
 
 .video-container {
     position: relative;
+}
+
+.response-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .video-player {
@@ -72,54 +68,3 @@
     line-height: .5rem;
 }
 
-.word-list {
-    max-width: 30vw;
-    height: 12vw;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1rem 0.2rem 0rem 1rem;
-    margin: auto;
-    margin-bottom: 2vh;
-    overflow-y: auto;
-    scrollbar-gutter: stable;
-}
-
-.word-list .word-list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border: 1px solid #eee;
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
-    background-color: #f8f9fa;
-}
-
-.word-list .delete-btn {
-    border: 0px;
-    background-color: #f8f9fa;
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-
-.word-entry-form {
-    display: flex;
-    justify-content: center;
-}
-
-.word-entry-form .word-input-box {
-    width: 100%;
-    max-width: 25vw;
-    padding: 0.75rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right: 0;
-}
-
-.word-entry-form .add-word-btn {
-    margin: 0;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-}

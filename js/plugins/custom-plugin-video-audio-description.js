@@ -114,6 +114,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
 
             return new Promise((resolve) => {
                 const startTime = performance.now();
+                let recordingStartTime;
                 const loop = trial.demo ? "loop" : "";
                 const demo_text = trial.demo ? trial.demo_text : "";
 
@@ -128,10 +129,10 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                             </div>
                         </div>
                     </div>
-                    <div>
+                    <div class="response-container">
                         <h4 id="instructions">${trial.instruction_text}</h4>
                         <button id="record-btn" class="jspsych-btn">Start Recording</button>
-                        <canvas id="waveform" style="display:none;"></canvas>
+                        <canvas id="waveform"></canvas>
                         <button id="submit-btn" class="jspsych-btn" style="display:none;">Submit</button>
                     </div>
                 </div>`;
@@ -180,7 +181,6 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                         ctx.fillRect(i * barW + 1, (H - bh) / 2, barW - 2, bh);
                     }
                 };
-                drawWaveform();
 
                 // Recording handlers
                 const onData = (e) => {
@@ -209,7 +209,8 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
 
                 recordBtn.addEventListener('click', () => {
                     recordBtn.style.display = "none";
-                    waveform.style.display = "block";
+                    drawWaveform();
+                    recordingStartTime = performance.now();
                     recorder.start();
                     window.addEventListener("keydown", spacebarListener);
                     videoPlayer.addEventListener("click", videoClickListener);
@@ -236,14 +237,14 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                             videoPlayer.play();
 
                             // Add event
-                            pauseEvents.push({ event: "resume", video_timestamp: videoPlayer.currentTime });
+                            pauseEvents.push({ event: "resume", video_timestamp: videoPlayer.currentTime, audio_timestamp: (performance.now() - recordingStartTime)/1000 });
                             break;
                         case "paused":
                             // Pause video
                             videoPlayer.pause();
 
                             // Add event
-                            pauseEvents.push({ event: "resume", video_timestamp: videoPlayer.currentTime });
+                            pauseEvents.push({ event: "resume", video_timestamp: videoPlayer.currentTime, audio_timestamp: (performance.now() - recordingStartTime)/1000 });
                             break;
                     }
                 }
@@ -257,22 +258,22 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
 
                 // On video end, hide video and request final recording
                 videoPlayer.onended = () => {
-
+                    window.removeEventListener("keydown", spacebarListener);
                     videoPlayer.style.display = "none";
                     instructions.textContent = trial.final_impressions_text;
-                    stopRecording();
+                    recorder.pause();
                     waveform.style.display = "none";
                     recordBtn.style.display = "block";
                     recordBtn.addEventListener('click', () => {
-                        recorder.start();
+                        recorder.resume();
                         recordBtn.style.display = "none";
                         waveform.style.display = "block";
                         submitBtn.style.display = "block";
                     }, { once: true });
 
-                    submitBtn.onclick = () => {
+                    submitBtn.onclick = async () => {
                         // End the trial
-                        window.removeEventListener("keydown", spacebarListener);
+                        await stopRecording();
                         let rt = Math.round(performance.now() - startTime);
                         const trialData = {
                             response: audioBase64,

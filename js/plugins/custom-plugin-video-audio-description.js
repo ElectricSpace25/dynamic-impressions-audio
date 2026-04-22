@@ -133,6 +133,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                         <h4 id="instructions">${trial.instruction_text}</h4>
                         <button id="record-btn" class="jspsych-btn">Start Recording</button>
                         <canvas id="waveform"></canvas>
+                        <button id="continue-btn" class="jspsych-btn" style="display:none;">Continue</button>
                         <button id="submit-btn" class="jspsych-btn" style="display:none;">Submit</button>
                     </div>
                 </div>`;
@@ -147,9 +148,10 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 const instructions = display_element.querySelector("#instructions")
                 const recordBtn = display_element.querySelector("#record-btn");
                 const waveform = display_element.querySelector("#waveform");
+                const continueBtn = display_element.querySelector("#continue-btn");
                 const submitBtn = display_element.querySelector("#submit-btn");
 
-                let pauseEvents = [];
+                let recordingEvents = [];
                 let isDisrupted = false;
                 let recordedChunks = [];
                 let audioBase64 = null;
@@ -230,6 +232,10 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                     else changeState("paused");
                 };
 
+                const addRecordingEvent = (event) => {
+                    recordingEvents.push({ event: event, video_timestamp: videoPlayer.currentTime, audio_timestamp: (performance.now() - recordingStartTime) / 1000 });
+                }
+
                 const changeState = (state) => {
                     switch (state) {
                         case "playing":
@@ -237,14 +243,14 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                             videoPlayer.play();
 
                             // Add event
-                            pauseEvents.push({ event: "resume", video_timestamp: videoPlayer.currentTime, audio_timestamp: (performance.now() - recordingStartTime)/1000 });
+                            addRecordingEvent("resume");
                             break;
                         case "paused":
                             // Pause video
                             videoPlayer.pause();
 
                             // Add event
-                            pauseEvents.push({ event: "resume", video_timestamp: videoPlayer.currentTime, audio_timestamp: (performance.now() - recordingStartTime)/1000 });
+                            addRecordingEvent("pause");
                             break;
                     }
                 }
@@ -256,28 +262,43 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                     changeState("paused");
                 }
 
-                // On video end, hide video and request final recording
+                // On video end, show continue button
                 videoPlayer.onended = () => {
+
+                    // Remove pausing
                     window.removeEventListener("keydown", spacebarListener);
-                    videoPlayer.style.display = "none";
-                    instructions.textContent = trial.final_impressions_text;
-                    recorder.pause();
-                    waveform.style.display = "none";
-                    recordBtn.style.display = "block";
+                    videoPlayer.removeEventListener("click", videoClickListener);
+                    videoPlayer.style.cursor = "default";
+
+                    // Continue to final impressions button
+                    continueBtn.style.display = "block";
+                    continueBtn.addEventListener('click', () => {
+                        recorder.pause();
+                        continueBtn.style.display = "none";
+                        videoPlayer.style.display = "none";
+                        trialContainer.classList.add("is-centered");
+                        instructions.textContent = trial.final_impressions_text;
+                        waveform.style.display = "none";
+                        recordBtn.style.display = "block";
+                    }, { once: true });
+
+                    // Start final recording button
                     recordBtn.addEventListener('click', () => {
                         recorder.resume();
+                        addRecordingEvent("final");
                         recordBtn.style.display = "none";
                         waveform.style.display = "block";
                         submitBtn.style.display = "block";
                     }, { once: true });
 
+                    // Submit button
                     submitBtn.onclick = async () => {
                         // End the trial
                         await stopRecording();
                         let rt = Math.round(performance.now() - startTime);
                         const trialData = {
                             response: audioBase64,
-                            pause_events: pauseEvents,
+                            recording_events: recordingEvents,
                             video: trial.video_name ?? trial.video_path,
                             video_id: trial.video_id,
                             condition: trial.condition,
@@ -285,13 +306,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                         };
                         resolve(trialData);
                     }
-
-                    // Enable input
-                    trialContainer.classList.add("is-centered");
                 };
-
-
-
             });
         }
     }

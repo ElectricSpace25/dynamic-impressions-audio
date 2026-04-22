@@ -9,7 +9,7 @@ output_folder = "cleaned_data/"
 os.makedirs(output_folder, exist_ok=True)
 
 # Data containers
-words_data = []
+events_data = []
 ratings_data = []
 demographics_data = []
 id_key_data = []
@@ -41,14 +41,14 @@ for file_path in files:
             print("ERROR: Can't decode JSON!")
             continue
 
-        # words.csv
+        # events.csv
         if trial_name == "video":
             for entry in resp_json:
-                words_data.append({
+                events_data.append({
                     "subject_id": subject_id,
-                    "word": entry.get("word"),
-                    "timestamp": entry.get("timestamp"),
-                    "response_state": entry.get("response_state"),
+                    "event": entry.get("event"),
+                    "video_timestamp": entry.get("video_timestamp"),
+                    "audio_timestamp": entry.get("audio_timestamp"),
                     "video": entry.get("video"),
                     "video_id": entry.get("video_id"),
                     "condition": entry.get("condition")
@@ -89,7 +89,7 @@ for file_path in files:
             })
 
 # Convert to DataFrames and save
-pd.DataFrame(words_data).to_csv(f"{output_folder}words.csv", index=False)
+pd.DataFrame(events_data).to_csv(f"{output_folder}events.csv", index=False)
 pd.DataFrame(ratings_data).to_csv(f"{output_folder}ratings.csv", index=False)
 pd.DataFrame(demographics_data).to_csv(f"{output_folder}demographics.csv", index=False)
 pd.DataFrame(id_key_data).to_csv(f"{output_folder}id_key.csv", index=False)

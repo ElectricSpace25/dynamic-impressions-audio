@@ -236,30 +236,30 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                     recordingEvents.push({ event: event, video_timestamp: videoPlayer.currentTime, audio_timestamp: (performance.now() - recordingStartTime) / 1000 });
                 }
 
-                const changeState = (state) => {
+                const changeState = (state, record=true) => {
                     switch (state) {
                         case "playing":
                             // Resume video
                             videoPlayer.play();
 
                             // Add event
-                            addRecordingEvent("resume");
+                            if (record) addRecordingEvent("resume");
                             break;
                         case "paused":
                             // Pause video
                             videoPlayer.pause();
 
                             // Add event
-                            addRecordingEvent("pause");
+                            if (record) addRecordingEvent("pause");
                             break;
                     }
                 }
 
                 // Set initial state
                 if (trial.demo) {
-                    changeState("playing");
+                    changeState("playing", false);
                 } else {
-                    changeState("paused");
+                    changeState("paused", false);
                 }
 
                 // On video end, show continue button

@@ -182,8 +182,8 @@ const videoTrial = {
     condition: jsPsych.timelineVariable("condition"),
     debug_logs: config.DEBUG_LOGS,
     on_finish: function(data){
-        const cleanVideoName = data.video.replace(/\.[^/.]+$/, "_");
-        data.response = saveAudio(cleanVideoName, data.response);
+        const cleanVideoName = data.response[0]?.video.replace(/\.[^/.]+$/, "_");
+        data.audio = saveAudio(cleanVideoName, data.audio);
     },
     data: { trial_name: "video" }
 };

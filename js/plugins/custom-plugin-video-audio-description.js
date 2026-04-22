@@ -33,13 +33,13 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "Instruction Text",
                 default: "Enter one word at a time, using as many words as would be helpful.",
-                description: "Text displayed under the word list when the video is paused."
+                description: "Text displayed above the recording waveform visualizer."
             },
             final_impressions_text: {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "Final Impressions Text",
                 default: "Please add any final words that you feel describe this person. You must include at least two.",
-                description: "Text displayed below the word list after the video ended."
+                description: "Text displayed above the recording waveform visualizer during final impressions."
             },
             demo: {
                 type: jspsych.ParameterType.BOOL,
@@ -61,24 +61,26 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
             }
         },
         data: {
+            /* Array of events and the corresponding timestamps and video*/
             response: {
                 type: jspsych.ParameterType.COMPLEX,
                 array: true,
                 nested: {
-                    /* The word entered */
-                    word: {
+                    /* The event type 
+                    - "pause" - the video was paused
+                    - "resume" - the video was resumed
+                    - "final" - the final recording started
+                    */
+                    event: {
                         type: jspsych.ParameterType.STRING
                     },
-                    /* The timestamp of the video when the word was entered */
-                    timestamp: {
+                    /* The timestamp of the video when the event occured */
+                    video_timestamp: {
                         type: jspsych.ParameterType.FLOAT
                     },
-                    /* When the word was entered
-                       - "inital" - before playing the video
-                       - "during" - during the video
-                       - "final" - after the video ended */
-                    response_state: {
-                        type: jspsych.ParameterType.STRING
+                    /* The timestamp of the audio recording when the event occured */
+                    audio_timestamp: {
+                        type: jspsych.ParameterType.FLOAT
                     },
                     /* The name of the video played.
                        Will be video_path if video_name was not provided */
@@ -96,6 +98,10 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                         type: jspsych.ParameterType.STRING
                     },
                 }
+            },
+            /* Base64 encoded audio */
+            audio: {
+                type: jspsych.ParameterType.STRING
             },
             /* The response time in milliseconds for the participant to complete the trial */
             rt: {
@@ -151,7 +157,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 const continueBtn = display_element.querySelector("#continue-btn");
                 const submitBtn = display_element.querySelector("#submit-btn");
 
-                let recordingEvents = [];
+                let events = [];
                 let isDisrupted = false;
                 let recordedChunks = [];
                 let audioBase64 = null;
@@ -232,25 +238,32 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                     else changeState("paused");
                 };
 
-                const addRecordingEvent = (event) => {
-                    recordingEvents.push({ event: event, video_timestamp: videoPlayer.currentTime, audio_timestamp: (performance.now() - recordingStartTime) / 1000 });
+                const addEvent = (event) => {
+                    events.push({
+                        event: event,
+                        video_timestamp: videoPlayer.currentTime,
+                        audio_timestamp: (performance.now() - recordingStartTime) / 1000,
+                        video: trial.video_name ?? trial.video_path,
+                        video_id: trial.video_id,
+                        condition: trial.condition
+                    });
                 }
 
-                const changeState = (state, record=true) => {
+                const changeState = (state, record = true) => {
                     switch (state) {
                         case "playing":
                             // Resume video
                             videoPlayer.play();
 
                             // Add event
-                            if (record) addRecordingEvent("resume");
+                            if (record) addEvent("resume");
                             break;
                         case "paused":
                             // Pause video
                             videoPlayer.pause();
 
                             // Add event
-                            if (record) addRecordingEvent("pause");
+                            if (record) addEvent("pause");
                             break;
                     }
                 }
@@ -285,7 +298,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                     // Start final recording button
                     recordBtn.addEventListener('click', () => {
                         recorder.resume();
-                        addRecordingEvent("final");
+                        addEvent("final");
                         recordBtn.style.display = "none";
                         waveform.style.display = "block";
                         submitBtn.style.display = "block";
@@ -297,11 +310,8 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                         await stopRecording();
                         let rt = Math.round(performance.now() - startTime);
                         const trialData = {
-                            response: audioBase64,
-                            recording_events: recordingEvents,
-                            video: trial.video_name ?? trial.video_path,
-                            video_id: trial.video_id,
-                            condition: trial.condition,
+                            response: events,
+                            audio: audioBase64,
                             rt: rt
                         };
                         resolve(trialData);

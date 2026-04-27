@@ -51,7 +51,8 @@ for file_path in files:
                     "audio_timestamp": entry.get("audio_timestamp"),
                     "video": entry.get("video"),
                     "video_id": entry.get("video_id"),
-                    "condition": entry.get("condition")
+                    "condition": entry.get("condition"),
+                    "audio_file": f"{subject_id}_{entry.get("video")}.csv"
                 })
                 # Update current video (so ratings.csv knows the corresponding video)
                 current_video = entry.get("video")

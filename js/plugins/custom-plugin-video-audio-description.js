@@ -150,7 +150,8 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 videoPlayer.removeAttribute("controls"); //TODO: Is this necessary??
 
                 // Get elements
-                const trialContainer = document.querySelector(".trial-container");
+                const trialContainer = document.querySelector(".trial-container"); 
+                const videoContainer = document.querySelector(".video-container"); 
                 const instructions = display_element.querySelector("#instructions")
                 const recordBtn = display_element.querySelector("#record-btn");
                 const visualizer = display_element.querySelector("#mic-visualizer");
@@ -265,7 +266,8 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                         recorder.pause();
                         addEvent("final");
                         continueBtn.style.display = "none";
-                        videoPlayer.style.display = "none";
+                        videoContainer.style.display = "none";
+                        trialContainer.style.justifyContent = "center";
                         trialContainer.classList.add("is-centered");
                         instructions.textContent = trial.final_impressions_text;
                         viz.stop();

@@ -1,5 +1,5 @@
 // Imports
-import { jsPsych, saveAudio} from "./init.js";
+import { jsPsych, saveAudio } from "./init.js";
 import { config } from "./config.js";
 import * as utils from "./utils.js";
 import * as content from "./content.js";
@@ -114,7 +114,7 @@ const audioCheckTrial = {
 // --- Initialize Mic ---
 
 const initMicTrial = {
-    type: jsPsychInitializeMicrophone,
+    type: jsPsychInitializeMicrophoneCheck,
     data: { trial_name: "init_mic" }
 };
 
@@ -181,7 +181,7 @@ const videoTrial = {
     video_id: jsPsych.timelineVariable("video_id"),
     condition: jsPsych.timelineVariable("condition"),
     debug_logs: config.DEBUG_LOGS,
-    on_finish: function(data){
+    on_finish: function (data) {
         const cleanVideoName = data.response[0]?.video.replace(/\.[^/.]+$/, "_");
         data.audio = saveAudio(cleanVideoName, data.audio);
     },
@@ -239,9 +239,9 @@ timeline.push(
     // instructionsTrial,
     // audioCheckTrial,
     initMicTrial,
-    // fullscreen,
-    // demoTrial,
-    // startMessageTrial,
+    fullscreen,
+    demoTrial,
+    startMessageTrial,
     videoTimeline,
     // demographicsTrial,
     finishedTrial

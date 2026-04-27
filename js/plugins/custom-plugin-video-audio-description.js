@@ -33,13 +33,13 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "Instruction Text",
                 default: "Enter one word at a time, using as many words as would be helpful.",
-                description: "Text displayed above the recording waveform visualizer."
+                description: "Text displayed above the audio visualizer."
             },
             final_impressions_text: {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "Final Impressions Text",
                 default: "Please add any final words that you feel describe this person. You must include at least two.",
-                description: "Text displayed above the recording waveform visualizer during final impressions."
+                description: "Text displayed above the audio visualizer during final impressions."
             },
             demo: {
                 type: jspsych.ParameterType.BOOL,
@@ -127,18 +127,18 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 // Set up HTML
                 display_element.innerHTML = `
                 <div class="trial-container">
-                    <div>
-                        <div class="video-container">
-                            <video class="video-player" oncontextmenu="return false;" ${loop}></video>
-                            <div class="video-overlay">
-                                ${demo_text}
-                            </div>
+                    <div class="instructions-container">
+                        <h4 id="instructions">${trial.instruction_text}</h4>
+                    </div>
+                    <div class="video-container">
+                        <video class="video-player" oncontextmenu="return false;" ${loop}></video>
+                        <div class="video-overlay">
+                            ${demo_text}
                         </div>
                     </div>
                     <div class="response-container">
-                        <h4 id="instructions">${trial.instruction_text}</h4>
                         <button id="record-btn" class="jspsych-btn">Start Recording</button>
-                        <canvas id="waveform"></canvas>
+                        <canvas id="mic-visualizer"></canvas>
                         <button id="continue-btn" class="jspsych-btn" style="display:none;">Continue</button>
                         <button id="submit-btn" class="jspsych-btn" style="display:none;">Submit</button>
                     </div>
@@ -153,7 +153,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 const trialContainer = document.querySelector(".trial-container");
                 const instructions = display_element.querySelector("#instructions")
                 const recordBtn = display_element.querySelector("#record-btn");
-                const waveform = display_element.querySelector("#waveform");
+                const visualizer = display_element.querySelector("#mic-visualizer");
                 const continueBtn = display_element.querySelector("#continue-btn");
                 const submitBtn = display_element.querySelector("#submit-btn");
 
@@ -162,33 +162,9 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 let recordedChunks = [];
                 let audioBase64 = null;
                 let loadResolver = null;
-                let response_state = "initial"; // initial, during, final
 
-                // Set up waveform analyser
-                const audioCtx = new AudioContext();
-                const analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 128;
-                audioCtx.createMediaStreamSource(recorder.stream).connect(analyser);
-                const freqData = new Uint8Array(analyser.frequencyBinCount);
-
-                let wvRaf = null;
-
-                const drawWaveform = () => {
-                    wvRaf = requestAnimationFrame(drawWaveform);
-                    if (waveform.offsetWidth === 0) return; // Only draw if waveform visible
-                    const ctx = waveform.getContext("2d");
-                    const W = waveform.width = waveform.offsetWidth;
-                    const H = waveform.height = waveform.offsetHeight;
-                    ctx.clearRect(0, 0, W, H);
-                    analyser.getByteFrequencyData(freqData);
-                    const barW = W / 48;
-                    for (let i = 0; i < 48; i++) {
-                        const amp = freqData[Math.floor(i / 48 * freqData.length * 0.6)] / 255;
-                        const bh = Math.max(2, amp * H * 0.9);
-                        ctx.fillStyle = "#c0392b";
-                        ctx.fillRect(i * barW + 1, (H - bh) / 2, barW - 2, bh);
-                    }
-                };
+                // Set up audio visualizer
+                const viz = micVisualizer.setup(recorder.stream, visualizer, "bars");
 
                 // Recording handlers
                 const onData = (e) => {
@@ -217,7 +193,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
 
                 recordBtn.addEventListener('click', () => {
                     recordBtn.style.display = "none";
-                    drawWaveform();
+                    viz.start();
                     recordingStartTime = performance.now();
                     recorder.start();
                     window.addEventListener("keydown", spacebarListener);
@@ -292,7 +268,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                         videoPlayer.style.display = "none";
                         trialContainer.classList.add("is-centered");
                         instructions.textContent = trial.final_impressions_text;
-                        waveform.style.display = "none";
+                        viz.stop();
                         recordBtn.style.display = "block";
                     }, { once: true });
 
@@ -300,7 +276,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                     recordBtn.addEventListener('click', () => {
                         recorder.resume();
                         recordBtn.style.display = "none";
-                        waveform.style.display = "block";
+                        viz.start();
                         submitBtn.style.display = "block";
                     }, { once: true });
 

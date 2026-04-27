@@ -15,12 +15,12 @@ demographics_data = []
 id_key_data = []
 
 # Get all matching CSV files
-files = glob.glob(os.path.join(input_folder, "data-*.csv"))
+files = glob.glob(os.path.join(input_folder, "*_data.csv"))
 
 for file_path in files:
     # Extract subject_id from filename
     file_name = os.path.basename(file_path)
-    subject_id = file_name.replace("data-", "").replace(".csv", "")
+    subject_id = file_name.replace("_data.csv", "")
     
     df = pd.read_csv(file_path)
     

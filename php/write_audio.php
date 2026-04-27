@@ -17,6 +17,6 @@ if ($post_data) {
     $decodedData = base64_decode($data);
 
     // Save audio file
-    file_put_contents("../data/{$name}", $decodedData);
+    file_put_contents("{$dir}/{$name}", $decodedData);
 }
 ?>

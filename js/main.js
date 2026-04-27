@@ -153,24 +153,6 @@ function checkFullscreen() {
     return checkFullscreenNode;
 }
 
-// --- Demo trial ---
-
-const demoTrial = {
-    type: jsPsychVideoAudioDescription,
-    demo: true,
-    video_path: "assets/demo.mp4",
-    demo_text: "<p>Before we start, let's do a practice trial</p><p>Please pause the video and practice entering words</p><p>The study will begin after this practice trial</p>",
-    debug_logs: config.DEBUG_LOGS,
-    data: { trial_name: "demo" }
-};
-
-const startMessageTrial = {
-    type: jsPsychHtmlButtonResponse,
-    stimulus: "Press continue to begin the experiment.",
-    choices: ["Continue"],
-    data: { trial_name: "start_message" }
-};
-
 
 // --- Video trial ---
 
@@ -240,8 +222,6 @@ timeline.push(
     // audioCheckTrial,
     initMicTrial,
     fullscreen,
-    demoTrial,
-    startMessageTrial,
     videoTimeline,
     // demographicsTrial,
     finishedTrial

@@ -12,10 +12,11 @@ var micVisualizer = {
     _drawBars(ctx, W, H, analyser, freqData) {
         analyser.getByteFrequencyData(freqData);
         const rms = Math.sqrt(freqData.reduce((sum, v) => sum + v * v, 0) / freqData.length);
-        const count = rms < 10 ? 0 : rms < 40 ? 1 : rms < 80 ? 2 : 3;
+        const bars = 4;
+        const count = rms < 10 ? 0 : rms < 40 ? 1 : rms < 70 ? 2 : rms < 100 ? 3 : 4;
         const gap = W / 8;
-        const barW = (W - gap * 4) / 3;
-        for (let i = 0; i < 3; i++) {
+        const barW = (W - gap * 4) / bars;
+        for (let i = 0; i < bars; i++) {
             ctx.fillStyle = i < count ? "#c0392b" : "#e0e0e0";
             ctx.fillRect(gap + i * (barW + gap), 0, barW, H);
         }
@@ -24,13 +25,13 @@ var micVisualizer = {
     // --- Canvas sizes and styles per type ---
 
     _canvasSize: {
-        bar:    { width: 300, height: 30 },
-        bars:   { width: 60,  height: 30 },
+        bar: { width: 300, height: 30 },
+        bars: { width: 60, height: 30 },
     },
 
     _canvasStyle: {
-        bar:    "border-radius: 4px; background: #f0f0f0;",
-        bars:   "",
+        bar: "border-radius: 4px; background: #f0f0f0;",
+        bars: "",
     },
 
     // --- Setup ---
@@ -45,8 +46,8 @@ var micVisualizer = {
 
         // Pick draw function and apply canvas size
         const drawFn = {
-            bar:    this._drawBar,
-            bars:   this._drawBars,
+            bar: this._drawBar,
+            bars: this._drawBars,
         }[type] ?? this._drawCircle;
 
         const size = this._canvasSize[type] ?? this._canvasSize.circle;

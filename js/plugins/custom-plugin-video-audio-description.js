@@ -285,6 +285,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                     // Submit button
                     submitBtn.onclick = async () => {
                         // End the trial
+                        addEvent("end");
                         await stopRecording();
                         let rt = Math.round(performance.now() - startTime);
                         const trialData = {

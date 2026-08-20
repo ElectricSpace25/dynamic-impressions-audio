@@ -5,29 +5,11 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
         name: "video-audio-description-trial",
         version: 1.0,
         parameters: {
-            video_path: {
+            video: {
                 type: jspsych.ParameterType.VIDEO,
-                pretty_name: "Video Path",
+                pretty_name: "Video",
                 default: undefined,
                 description: "The full path to the video."
-            },
-            video_name: {
-                type: jspsych.ParameterType.STRING,
-                pretty_name: "Video Name",
-                default: null,
-                description: "The name of the video to be saved in the data output."
-            },
-            video_id: {
-                type: jspsych.ParameterType.INT,
-                pretty_name: "Video ID",
-                default: null,
-                description: "The index of the video within its list (only relevant for Exclusive Index Mode)."
-            },
-            condition: {
-                type: jspsych.ParameterType.STRING,
-                pretty_name: "Condition",
-                default: null,
-                description: "The condition associated with the video."
             },
             instruction_text: {
                 type: jspsych.ParameterType.HTML_STRING,
@@ -61,7 +43,11 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
             }
         },
         data: {
-            /* Array of events and the corresponding timestamps and video*/
+            /* Path of the video played */
+            video: {
+                type: jspsych.ParameterType.STRING
+            },
+            /* Array containing all events and associated timestamps */
             response: {
                 type: jspsych.ParameterType.COMPLEX,
                 array: true,
@@ -81,21 +67,6 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                     /* The timestamp of the audio recording when the event occured */
                     audio_timestamp: {
                         type: jspsych.ParameterType.FLOAT
-                    },
-                    /* The name of the video played.
-                       Will be video_path if video_name was not provided */
-                    video: {
-                        type: jspsych.ParameterType.STRING
-                    },
-                    /* The index of the video in the order given before shuffling.
-                       Will be null if video_id not provided */
-                    video_id: {
-                        type: jspsych.ParameterType.STRING
-                    },
-                    /* The condition the video is assigned to.
-                       Will be null if condition not provided */
-                    condition: {
-                        type: jspsych.ParameterType.STRING
                     },
                 }
             },
@@ -146,12 +117,12 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
 
                 // Set up video
                 const videoPlayer = display_element.querySelector(".video-player");
-                videoPlayer.src = `${trial.video_path}`;
+                videoPlayer.src = `${trial.video}`;
                 videoPlayer.removeAttribute("controls"); //TODO: Is this necessary??
 
                 // Get elements
-                const trialContainer = document.querySelector(".trial-container"); 
-                const videoContainer = document.querySelector(".video-container"); 
+                const trialContainer = document.querySelector(".trial-container");
+                const videoContainer = document.querySelector(".video-container");
                 const instructions = display_element.querySelector("#instructions")
                 const recordBtn = display_element.querySelector("#record-btn");
                 const visualizer = display_element.querySelector("#mic-visualizer");
@@ -220,9 +191,6 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                         event: event,
                         video_timestamp: videoPlayer.currentTime,
                         audio_timestamp: (performance.now() - recordingStartTime) / 1000,
-                        video: trial.video_name ?? trial.video_path,
-                        video_id: trial.video_id,
-                        condition: trial.condition
                     });
                 }
 
@@ -291,6 +259,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                         const trialData = {
                             response: events,
                             audio: audioBase64,
+                            video: trial.video,
                             rt: rt
                         };
                         resolve(trialData);

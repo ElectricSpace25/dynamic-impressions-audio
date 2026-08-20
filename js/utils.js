@@ -14,7 +14,7 @@ export function setupMedia() {
         let shuffledList = originalList;
         if (videoLists[i].shuffle || config.SHUFFLE_ALL) shuffledList = jsPsych.randomization.shuffle(originalList);
         const selectionNum = videoLists[i].selectionNum;
-        const conditionName = videoLists[i].condition;
+        const listName = videoLists[i].listName;
 
         if (config.EXCLUSIVE_INDEX_MODE && videoIndices.size > 0) {
             shuffledList = shuffledList.filter(video => {
@@ -34,17 +34,16 @@ export function setupMedia() {
 
         // Timeline variables
         const timelineVariables = chosenVideos.map(video => ({
-            video_name: video.substring(0, video.lastIndexOf('.')),
-            video_path: `${config.VIDEO_PATH}/${video}`,
+            video: `${config.VIDEO_PATH}/${video}`,
             video_id: originalList.indexOf(video),
-            condition: conditionName
+            list_name: listName
         }));
 
         // Add to list
         videoTimelineVariableLists.push(timelineVariables);
 
         // Debug printing
-        if (config.DEBUG_LOGS) console.log(`List ${i}: ${conditionName}`);
+        if (config.DEBUG_LOGS) console.log(`List ${i}: ${listName}`);
         if (config.DEBUG_LOGS) console.log(`Original: ${originalList}`);
         if (config.DEBUG_LOGS && videoLists[i].shuffle) console.log(`Shuffled: ${shuffledList}`);
         if (config.DEBUG_LOGS) console.log(`Choosing ${selectionNum} videos:`);

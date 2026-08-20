@@ -14,14 +14,8 @@ export const config = {
     // See the wiki for more information
     EXCLUSIVE_INDEX_MODE: false,
 
-    // Message shown to participants before redirection upon successful completion of the study
-    COMPLETION_MESSAGE: "You will be redirected to Prolific shortly!",
-    
     // Link participants are redirected to 2 seconds after seeing the completion message
     COMPLETION_LINK: "https://app.prolific.co/submissions/complete?cc=????????",
-
-    // Message shown to participants before redirection upon early termination of the study
-    FAILURE_MESSAGE: "<p>Sorry, you are not eligible for the study.</p><p>You will be redirected to Prolific shortly.</p>",
 
     // Link participants are redirected to 2 seconds after seeing the failure message
     FAILURE_LINK: "https://app.prolific.co/submissions/complete?cc=????????",
@@ -35,7 +29,7 @@ export const config = {
 
 export const videoLists = [
     {
-        condition: "control", // The condition name saved in data
+        listName: "default", // The list name saved in data
         selectionNum: 1, // How many videos to select from this list
         shuffle: false, // Whether to shuffle the order of the videos or not (overriden by SHUFFLE_ALL)
         videos: [

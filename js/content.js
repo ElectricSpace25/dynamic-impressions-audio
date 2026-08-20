@@ -253,8 +253,8 @@ export const demographicsContent = {
     ]
 };
 
-// --- Finished ---
-export const finishedContent = {
+// --- Completion ---
+export const completionContent = {
     title: "Study Completed",
     completeText: "Click here to return to Prolific",
     elements:

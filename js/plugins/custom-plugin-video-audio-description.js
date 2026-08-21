@@ -41,9 +41,9 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 default: "After you finish verbalizing your impression, click the \"Continue\" button.",
                 description: "Text displayed above the video after it ends."
             },
-            early_instruction_text: {
+            early_pause_instruction_text: {
                 type: jspsych.ParameterType.HTML_STRING,
-                pretty_name: "arly Instruction Text",
+                pretty_name: "Early Pause Instruction Text",
                 default: "Please wait slightly longer before pausing again.",
                 description: "Text displayed above the video when trying to pause before the pause cooldown has passed."
             },
@@ -165,6 +165,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 const continueBtn = display_element.querySelector("#continue-btn");
                 const submitBtn = display_element.querySelector("#submit-btn");
 
+                let lastPauseTime = -(trial.pause_cooldown / 1000);
                 let events = [];
                 let recordedChunks = [];
                 let audioBase64 = null;
@@ -212,14 +213,12 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 const spacebarListener = (event) => {
                     if (event.code === "Space") {
                         event.preventDefault();
-                        if (videoPlayer.paused) changeState("playing");
-                        else changeState("paused");
+                        toggleVideo();
                     }
                 };
 
                 const videoClickListener = (event) => {
-                    if (videoPlayer.paused) changeState("playing");
-                    else changeState("paused");
+                    toggleVideo();
                 };
 
                 const addEvent = (event) => {
@@ -228,6 +227,33 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                         video_timestamp: videoPlayer.currentTime,
                         audio_timestamp: (performance.now() - recordingStartTime) / 1000,
                     });
+                    console.log(events);
+                }
+
+                const toggleVideo = () => {
+                    // If playing, pause
+                    if (!videoPlayer.paused) {
+                        if (videoPlayer.currentTime - lastPauseTime <= (trial.pause_cooldown / 1000)) {
+                            console.log(videoPlayer.currentTime)
+                            console.log(lastPauseTime)
+                            console.log(trial.pause_cooldown / 1000)
+                            // Don't pause if too early
+                            instructions.textContent = trial.early_pause_instruction_text;
+                            setTimeout(() => {
+                                instructions.textContent = trial.default_instruction_text;
+                            }, 1500);
+                            return;
+                        } else {
+                            // Change to paused state
+                            changeState("paused");
+                        }
+                    }
+
+                    // If paused, play
+                    else {
+                        lastPauseTime = videoPlayer.currentTime;
+                        changeState("playing")
+                    }
                 }
 
                 const changeState = (state, record = true) => {

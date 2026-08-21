@@ -32,13 +32,13 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
             paused_instruction_text: {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "Pause Instruction Text",
-                default: "Resume the video by clicking it or pressing the spacebar when ready",
+                default: "Resume the video by clicking it or pressing the spacebar when ready.",
                 description: "Text displayed above the video when it is paused."
             },
             end_instruction_text: {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "End Instruction Text",
-                default: "After you finish verbalizing your impression, click the \"Continue\" button",
+                default: "After you finish verbalizing your impression, click the \"Continue\" button.",
                 description: "Text displayed above the video after it ends."
             },
             early_instruction_text: {
@@ -50,7 +50,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
             final_impressions_text: {
                 type: jspsych.ParameterType.HTML_STRING,
                 pretty_name: "Final Instruction Text",
-                default: "Please add any final words that you feel describe this person. You must include at least two.",
+                default: "Click \"Start Recording\" and verbalize your final impression of the speaker. Click \"Submit\" when done.",
                 description: "Text displayed above the audio visualizer during final impressions."
             },
             pause_cooldown: {

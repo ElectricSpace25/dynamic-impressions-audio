@@ -196,6 +196,24 @@ export const audioCheckContent = {
     completeText: "Continue",
 };
 
+// --- Allow Mic Instructions ---
+export const allowMicInstructionsContent = {
+    title: "Instructions",
+    completeText: "Click here to return to Prolific",
+    elements:
+        [
+            {
+                type: "html",
+                html: `
+                    <p>After pressing the \"Continue\" button below, you will see a pop-up message from your browser requesting permission to use your microphone. Examples have been provided below. The style will vary depending on your browser.</p>
+                    <img src="assets/instruct/allow_mic.png" style="width: 100%;">
+                    <p>When you see this message, please use the dropdown (if provided) to select the microphone you want to use, then click \"Allow\".</p>
+                `
+            }
+        ],
+    completeText: "Continue",
+};
+
 // --- Rating Impressions ---
 
 // Dynamically builds sliders based on the above list of traits

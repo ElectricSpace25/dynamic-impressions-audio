@@ -100,6 +100,12 @@ const audioCheckTrial = {
 
 // --- Initialize Mic ---
 
+const allowMicInstructionsTrial = {
+    type: jsPsychSurvey,
+    survey_json: content.allowMicInstructionsContent,
+    data: { trial_name: "allow__mic_instructions" }
+}
+
 const initMicTrial = {
     type: jsPsychInitializeMicrophoneCheck,
     data: { trial_name: "init_mic" }
@@ -205,7 +211,7 @@ timeline.push(
     screenerTrial,
     instructionsTrial,
     audioCheckTrial,
-    // warning about allowing
+    allowMicInstructionsTrial,
     initMicTrial,
     fullscreen,
     // demo

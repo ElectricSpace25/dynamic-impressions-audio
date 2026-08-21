@@ -1,29 +1,54 @@
 // --- Screener ---
 export const screenerContent = {
-    title: "Welcome to the experiment!",
-    elements:
-        [
-            {
-                type: "html",
-                name: "instructions",
-                html: "<p>Please answer the following questions to determine your eligibility.</p>",
-            },
-            {
-                type: "radiogroup",
-                name: "english",
-                title: "Are you fluent in English?",
-                choices: ["Yes", "No"],
-                isRequired: true
-            },
-            {
-                type: "radiogroup",
-                name: "attention_check",
-                title: "Please read the following instructions carefully",
-                description: "Recent research on decision making has shown that choices are affected by political party affiliation. To help us understand how people from different backgrounds make decisions, we are interested in information about you. Specifically, we want to know if you actually read any of the instructions we give at the beginning of our survey; if not, some results may not tell us very much about decision making and perception in the real world. To show that you have read the instructions, please ignore the questions about political party affiliation below and simply select \"Other\" at the bottom.",
-                choices: ["Democratic", "Republican", "Independent", "Libertarian", "Green Party", "Other"],
-                isRequired: true
-            }
-        ],
+    pages: [
+        {
+            title: "Welcome to the experiment!",
+            elements:
+                [
+                    {
+                        type: "html",
+                        name: "instructions",
+                        html: "<p>Please answer the following questions to determine your eligibility.</p>",
+                    },
+                    {
+                        type: "radiogroup",
+                        name: "english",
+                        title: "Are you fluent in English?",
+                        choices: ["Yes", "No"],
+                        isRequired: true
+                    },
+                    {
+                        type: "radiogroup",
+                        name: "attention_check",
+                        title: "Please read the following instructions carefully",
+                        description: "Recent research on decision making has shown that choices are affected by political party affiliation. To help us understand how people from different backgrounds make decisions, we are interested in information about you. Specifically, we want to know if you actually read any of the instructions we give at the beginning of our survey; if not, some results may not tell us very much about decision making and perception in the real world. To show that you have read the instructions, please ignore the questions about political party affiliation below and simply select \"Other\" at the bottom.",
+                        choices: ["Democratic", "Republican", "Independent", "Libertarian", "Green Party", "Other"],
+                        isRequired: true
+                    }
+                ]
+        },
+        {
+            elements:
+                [
+                    {
+                        type: "radiogroup",
+                        name: "mic",
+                        title: "This study requires the use of a microphone to record yourself speaking.",
+                        choices: [
+                            {
+                                value: "yes_mic",
+                                text: "I have a functioning microphone and am able to record myself speaking in a quiet location."
+                            },
+                            {
+                                value: "no_mic",
+                                text: "I am unable/unwilling to use my microphone to record myself speaking."
+                            }
+                        ],
+                        isRequired: true
+                    },
+                ]
+        }
+    ],
     completeText: "Continue",
 };
 

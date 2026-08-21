@@ -71,7 +71,7 @@ const screenerTrial = {
     type: jsPsychSurvey,
     survey_json: content.screenerContent,
     on_finish: function (data) {
-        if (data.response.english == "No" || data.response.attention_check != "Other") {
+        if (data.response.english == "No" || data.response.attention_check != "Other" || data.response.mic == "no_mic") {
             // Attention/Language check failed -> study will terminate with a failure code and no data saved
             jsPsych.abortExperiment();
         }

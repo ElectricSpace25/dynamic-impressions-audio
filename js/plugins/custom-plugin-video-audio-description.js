@@ -11,17 +11,53 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 default: undefined,
                 description: "The full path to the video."
             },
-            instruction_text: {
+            initial_instruction_text: {
                 type: jspsych.ParameterType.HTML_STRING,
-                pretty_name: "Instruction Text",
-                default: "Enter one word at a time, using as many words as would be helpful.",
-                description: "Text displayed above the audio visualizer."
+                pretty_name: "Initial Instruction Text",
+                default: "Click \"Start Recording\" to begin recording your audio.",
+                description: "Text displayed above the video before starting the recording."
+            },
+            pre_start_instruction_text: {
+                type: jspsych.ParameterType.HTML_STRING,
+                pretty_name: "Pre-Start Instruction Text",
+                default: "After verbalizing your initial impressions, start the video by clicking it or pressing the spacebar",
+                description: "Text displayed above the video before starting the video."
+            },
+            default_instruction_text: {
+                type: jspsych.ParameterType.HTML_STRING,
+                pretty_name: "Default Instruction Text",
+                default: "Verbalize your impressions as they occur. For longer impressions, you can pause the video by clicking it or pressing the space bar.",
+                description: "Text displayed above the video when it is playing."
+            },
+            paused_instruction_text: {
+                type: jspsych.ParameterType.HTML_STRING,
+                pretty_name: "Pause Instruction Text",
+                default: "Resume the video by clicking it or pressing the spacebar when ready",
+                description: "Text displayed above the video when it is paused."
+            },
+            end_instruction_text: {
+                type: jspsych.ParameterType.HTML_STRING,
+                pretty_name: "End Instruction Text",
+                default: "After you finish verbalizing your impression, click the \"Continue\" button",
+                description: "Text displayed above the video after it ends."
+            },
+            early_instruction_text: {
+                type: jspsych.ParameterType.HTML_STRING,
+                pretty_name: "arly Instruction Text",
+                default: "Please wait slightly longer before pausing again.",
+                description: "Text displayed above the video when trying to pause before the pause cooldown has passed."
             },
             final_impressions_text: {
                 type: jspsych.ParameterType.HTML_STRING,
-                pretty_name: "Final Impressions Text",
+                pretty_name: "Final Instruction Text",
                 default: "Please add any final words that you feel describe this person. You must include at least two.",
                 description: "Text displayed above the audio visualizer during final impressions."
+            },
+            pause_cooldown: {
+                type: jspsych.ParameterType.INT,
+                pretty_name: "Pause Cooldown",
+                default: 2000,
+                description: "Duration in milliseconds before the video can be paused again after resuming."
             },
             demo: {
                 type: jspsych.ParameterType.BOOL,
@@ -99,7 +135,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 display_element.innerHTML = `
                 <div class="trial-container">
                     <div class="instructions-container">
-                        <h4 id="instructions">${trial.instruction_text}</h4>
+                        <h3 id="instructions" class="instruction-text">${trial.initial_instruction_text}</h3>
                     </div>
                     <div class="video-container">
                         <video class="video-player" oncontextmenu="return false;" ${loop}></video>
@@ -164,6 +200,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 recorder.addEventListener("stop", onStop);
 
                 recordBtn.addEventListener('click', () => {
+                    instructions.textContent = trial.pre_start_instruction_text;
                     recordBtn.style.display = "none";
                     viz.start();
                     recordingStartTime = performance.now();
@@ -200,12 +237,18 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                             // Resume video
                             videoPlayer.play();
 
+                            //Change instructions
+                            instructions.textContent = trial.default_instruction_text;
+
                             // Add event
                             if (record) addEvent("resume");
                             break;
                         case "paused":
                             // Pause video
                             videoPlayer.pause();
+
+                            //Change instructions
+                            if (instructions.textContent == trial.default_instruction_text) instructions.textContent = trial.paused_instruction_text;
 
                             // Add event
                             if (record) addEvent("pause");
@@ -222,6 +265,9 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
 
                 // On video end, show continue button
                 videoPlayer.onended = () => {
+
+                    // Change instructions
+                    instructions.textContent = trial.end_instruction_text;
 
                     // Remove pausing
                     window.removeEventListener("keydown", spacebarListener);

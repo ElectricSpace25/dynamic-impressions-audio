@@ -58,17 +58,3 @@ export function setupMedia() {
         return videoTimelineVariableLists.flat();
     }
 }
-
-// Helper function to convert disruption time code to seconds
-export function parseTimeCode(timeString) {
-    if (!timeString) return null;
-    const parts = timeString.split(/[:.]/); // Split by colon or dot
-    if (parts.length < 2) return null;
-
-    const minutes = parseInt(parts[0], 10);
-    const seconds = parseInt(parts[1], 10);
-    // If the 3rd part exists (centiseconds), use it. Otherwise 0.
-    const centiseconds = parts[2] ? parseInt(parts[2], 10) : 0;
-
-    return (minutes * 60) + seconds + (centiseconds / 100);
-}

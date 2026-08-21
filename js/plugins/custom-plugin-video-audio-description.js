@@ -166,7 +166,6 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 const submitBtn = display_element.querySelector("#submit-btn");
 
                 let events = [];
-                let isDisrupted = false;
                 let recordedChunks = [];
                 let audioBase64 = null;
                 let loadResolver = null;

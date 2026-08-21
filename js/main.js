@@ -4,19 +4,6 @@ import { config } from "./config.js";
 import * as utils from "./utils.js";
 import * as content from "./content.js";
 
-// Import disruptions.js if it exists
-let disruptionLookup;
-async function loadDisruptions() {
-    try {
-        const module = await import("./disruptions.js");
-        disruptionLookup = module.disruptionLookup;
-    } catch (error) {
-        if (config.DEBUG_LOGS) console.warn("disruptions.js not found");
-        disruptionLookup = null;
-    }
-}
-await loadDisruptions();
-
 const startTime = new Date().toLocaleString(); // Records the date and time at the start of the study
 export let complete = false; // This is set to true at the end of the study to indicate completion and 
 const timeline = []; // Creates the experiment timeline

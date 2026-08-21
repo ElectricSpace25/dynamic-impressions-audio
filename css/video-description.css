@@ -1,16 +1,22 @@
 .trial-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: grid;
+    grid-template-rows: 1fr auto 1fr;
+    justify-items: center;
+    row-gap: 1rem;
     height: 100vh;
-    width: 100%;
     box-sizing: border-box;
-    overflow: hidden;
-    padding: 2vh 0;
+    padding: 1rem;
 }
 
 .instructions-container {
-    flex-shrink: 0; /* Never shrink instructions */
+    align-self: end;
+    display: flex;
+    justify-content: center;
+    width: 70vw;
+}
+
+.instruction-text {
+    margin: 0;
     text-align: center;
 }
 
@@ -19,27 +25,18 @@
 }
 
 .video-container {
-    flex: 1 1 auto; /* Grow and shrink video */
-    min-height: 0;
     position: relative;
-}
-
-.response-container {
-    flex-shrink: 0;
+    max-width: 50vw;
+    max-height: 80vh;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
     align-items: center;
-    padding: 2vh;
-    min-height: 20vh;
+    justify-content: center;
 }
 
 .video-player {
-    max-height: 100%;
-    max-width: 100%;
-    width: auto;
-    height: auto;
-    /* max-height: 80vh; */
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
     border-radius: 8px;
     cursor: pointer;
 }
@@ -47,19 +44,20 @@
 /* Text that displays over the video in demo mode */
 .video-overlay {
     position: absolute;
+    inset: 0;
     pointer-events: none;
-    user-select: none;
-    top: 0;
-    width: 100%;
-    height: 100%;
+}
+
+.response-container {
+    align-self: start;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    color: white;
-    font-weight: bold;
-    font-size: 1.5vw;
-    line-height: .5rem;
+    gap: 1rem;
+}
+
+.response-container button {
+    margin: 0;
 }
 
 #mic-visualizer {
@@ -70,6 +68,19 @@
 #mic-visualizer-wrapper {
     display: none;
     align-items: center;
-    justify-content:center;
-    padding : 10px;
+    justify-content: center;
+}
+
+/* jsPsych style dropdown select */
+.jspsych-select {
+    padding: 4px 2px 4px 6px;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: "Open Sans", "Arial", sans-serif;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #333;
+    background-color: #fff;
+    border-color: #aaa;
 }

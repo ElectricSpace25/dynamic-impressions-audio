@@ -30,7 +30,7 @@ var micVisualizer = {
     },
 
     _canvasStyle: {
-        bar: "border-radius: 4px; background: #f0f0f0;",
+        bar: "border-radius: 4px; background: #f0f0f0; margin: 10px;",
         bars: "",
     },
 

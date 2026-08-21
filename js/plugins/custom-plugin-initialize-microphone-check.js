@@ -75,8 +75,9 @@ var jsPsychInitializeMicrophoneCheck = (function (jspsych) {
     showMicrophoneSelection(display_element, trial) {
       let html = `
         ${trial.device_select_message}
-        <select name="mic" id="which-mic" style="font-size:14px; font-family: 'Open Sans', 'Arial', sans-serif; padding: 4px;"></select>
+        <select name="mic" id="which-mic" class="jspsych-select"></select>
         <canvas id="mic-visualizer"></canvas>
+        <p></p>
         <button class="jspsych-btn" id="btn-select-mic">${trial.button_label}</button></p>`;
       display_element.innerHTML = html;
     }

@@ -49,3 +49,37 @@ ol.bold-numbers > li::marker {
     margin: 0;
     display: inline-block;
 }
+
+/* Tooltip styling */
+.tooltip-wrapper {
+    position: relative;
+    cursor: help;
+    font-weight: normal;
+    color: rgb(156, 156, 156);
+}
+
+.tooltip-wrapper .tooltip-box {
+    visibility: hidden;
+    width: 220px;
+    background-color: #2b2b2b;
+    color: #ffffff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: normal;
+
+    position: absolute;
+    z-index: 999;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+}
+
+.tooltip-wrapper:hover .tooltip-box {
+    visibility: visible;
+    opacity: 1;
+}

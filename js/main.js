@@ -183,6 +183,14 @@ const videoTrial = {
 const ratingTrial = {
     type: jsPsychSurvey,
     survey_json: content.ratingContent,
+    survey_function: function (surveyInstance) {
+        // Parses slider titles as html so tooltips work
+        surveyInstance.onTextMarkdown.add((sender, options) => {
+            if (options.element?.getType() === "slider" && options.name === "title") {
+                options.html = options.text;
+            }
+        });
+    },
     data: { trial_name: "ratings" }
 };
 

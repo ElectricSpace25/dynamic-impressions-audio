@@ -220,7 +220,7 @@ export const allowMicInstructionsContent = {
 const traitSliders = traits.map(trait => ({
     type: "slider",
     name: trait.name,
-    title: trait.title,
+    title: `${trait.title} <span class="tooltip-wrapper">🛈<span class="tooltip-box">${trait.def}</span></span>`,
     min: 0,
     max: 10,
     defaultValue: 5,

@@ -68,7 +68,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
             demo_text: {
                 type: jspsych.ParameterType.STRING,
                 pretty_name: "Demo Text",
-                default: "<p>Before we start, let's do a practice trial</p><p>Please pause the video and practice entering words</p><p>The study will begin after this practice trial</p>",
+                default: "<p>Before we start, let's do a practice trial</p><p>Please practice verbalizing your impressions</p><p>The study will begin after this practice trial</p>",
                 description: "Text to display on the video when in demo mode."
             },
             debug_logs: {
@@ -128,7 +128,6 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
             return new Promise((resolve) => {
                 const startTime = performance.now();
                 let recordingStartTime;
-                const loop = trial.demo ? "loop" : "";
                 const demo_text = trial.demo ? trial.demo_text : "";
 
                 // Set up HTML
@@ -138,7 +137,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                         <h3 id="instructions" class="instruction-text">${trial.initial_instruction_text}</h3>
                     </div>
                     <div class="video-container">
-                        <video class="video-player" oncontextmenu="return false;" ${loop}></video>
+                        <video class="video-player" oncontextmenu="return false;"></video>
                         <div class="video-overlay">
                             ${demo_text}
                         </div>
@@ -159,7 +158,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 // Get elements
                 const trialContainer = document.querySelector(".trial-container");
                 const videoContainer = document.querySelector(".video-container");
-                const instructions = display_element.querySelector("#instructions")
+                const instructions = display_element.querySelector("#instructions");
                 const recordBtn = display_element.querySelector("#record-btn");
                 const visualizer = display_element.querySelector("#mic-visualizer");
                 const continueBtn = display_element.querySelector("#continue-btn");
@@ -282,11 +281,7 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                 }
 
                 // Set initial state
-                if (trial.demo) {
-                    changeState("playing", false);
-                } else {
-                    changeState("paused", false);
-                }
+                changeState("paused", false);
 
                 // On video end, show continue button
                 videoPlayer.onended = () => {

@@ -262,9 +262,34 @@ export const ratingContent = {
                     },
                     ...traitSliders
                 ]
+        },
+        {
+            title: "Recruitment Decision",
+            elements: [
+                {
+                    type: "rating",
+                    name: "interview",
+                    title: "Please decide whether to invite this candidate for an interview.",
+                    autoGenerate: false,
+                    rateCount: 2,
+                    rateValues: [
+                        {
+                            value: "1",
+                            text: "Invite for interview"
+                        },
+                        {
+                            value: "0",
+                            text: "Do not invite for interview"
+                        }
+                    ],
+                    rateMax: 2,
+                    displayMode: "buttons",
+                    isRequired: true
+                }
+            ],
+            showNavigationButtons: false
         }
-    ],
-    completeText: "Continue",
+    ]
 };
 
 // --- Demographics ---

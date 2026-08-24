@@ -189,6 +189,12 @@ const ratingTrial = {
 
 // --- Ending trials ---
 
+const questionsTrial = {
+    type: jsPsychSurvey,
+    survey_json: content.questionsContent,
+    data: { trial_name: "questions" }
+};
+
 const demographicsTrial = {
     type: jsPsychSurvey,
     survey_json: content.demographicsContent,
@@ -234,6 +240,7 @@ timeline.push(
     demoTrial,
     startMessageTrial,
     videoTimeline,
+    questionsTrial,
     demographicsTrial,
     completionTrial
 );

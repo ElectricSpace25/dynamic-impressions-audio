@@ -292,6 +292,27 @@ export const ratingContent = {
     ]
 };
 
+// --- Questions ---
+export const questionsContent = {
+    elements:
+        [
+            {
+                type: "radiogroup",
+                name: "interrupted",
+                title: "Were you interrupted at any point during this study?",
+                choices: ["Yes", "No"],
+                isRequired: true
+            },
+            {
+                type: "comment",
+                name: "interruption",
+                visibleIf: "{interrupted} = 'Yes'",
+                title: "If possible, describe for which video(s) this occurred"
+            }
+        ],
+    completeText: "Continue",
+};
+
 // --- Demographics ---
 export const demographicsContent = {
     pages: [
@@ -327,7 +348,6 @@ export const demographicsContent = {
         },
         {
             title: "Feedback",
-            completeText: "Submit",
             elements:
                 [
                     {

@@ -304,28 +304,24 @@ export const demographicsContent = {
                         name: "age",
                         title: "What is your age?",
                         inputType: "number",
-                        isRequired: true
                     },
                     {
                         type: "checkbox",
                         name: "gender",
                         title: "What gender do you identify with? (Select all that apply)",
                         choices: ["Male", "Female", "Transgender", "Non-binary", "Not otherwise specified", "I do not wish to provide this information"],
-                        isRequired: true
                     },
                     {
                         type: "checkbox",
                         name: "race",
                         title: "What race/ethnicity do you identify with? (Select all that apply)",
                         choices: ["American Indian or Alaska Native", "Asian", "Black or African-American", "Native Hawaiian or Other Pacific Islander", "White", "Latino", "Other"],
-                        isRequired: true
                     },
                     {
                         type: "radiogroup",
                         name: "education",
                         title: "What is the highest level of education you have received?",
                         choices: ["Less than High School", "High School Diploma", "Some College", "Associate's Degree", "Bachelor's Degree", "Some Graduate School", "Master's Degree", "Doctoral Degree"],
-                        isRequired: true
                     }
                 ]
         },

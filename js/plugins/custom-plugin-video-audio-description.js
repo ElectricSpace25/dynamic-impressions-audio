@@ -125,6 +125,13 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
         async trial(display_element, trial) {
             const recorder = this.jsPsych.pluginAPI.getMicrophoneRecorder();
 
+            if (trial.debug_logs) {
+                const track = recorder.stream.getAudioTracks()[0];
+                console.log("Bitrate:", recorder.audioBitsPerSecond);
+                console.log("ACTUAL audio settings:", track.getSettings());
+                console.log("REQUESTED audio settings:", track.getConstraints());
+            }
+
             return new Promise((resolve) => {
                 const startTime = performance.now();
                 let recordingStartTime;

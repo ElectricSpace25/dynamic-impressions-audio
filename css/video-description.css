@@ -72,8 +72,7 @@
 }
 
 #mic-visualizer {
-    width: 30;
-    height: 30;
+    margin: 10px;
 }
 
 #mic-visualizer-wrapper {

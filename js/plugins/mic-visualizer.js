@@ -1,42 +1,13 @@
 var micVisualizer = {
+    // Visualizer configuration
+    bars: 5,
+    start: 10,     // RMS threshold to light up the first bar
+    step: 30,      // RMS step between bars
+    barWidth: 8,   // Pixel width per bar
+    barGap: 4,     // Pixel gap between bars
+    height: 30,    // Visualizer height (width calculated from bars)
 
-    // --- Visualizer styles ---
-
-    _drawBar(ctx, W, H, analyser, freqData) {
-        analyser.getByteFrequencyData(freqData);
-        const rms = Math.sqrt(freqData.reduce((sum, v) => sum + v * v, 0) / freqData.length);
-        ctx.fillStyle = `hsl(${120 - rms}, 80%, 45%)`;
-        ctx.fillRect(0, 0, (rms / 128) * W, H);
-    },
-
-    _drawBars(ctx, W, H, analyser, freqData) {
-        analyser.getByteFrequencyData(freqData);
-        const rms = Math.sqrt(freqData.reduce((sum, v) => sum + v * v, 0) / freqData.length);
-        const bars = 4;
-        const count = rms < 10 ? 0 : rms < 40 ? 1 : rms < 70 ? 2 : rms < 100 ? 3 : 4;
-        const gap = W / 8;
-        const barW = (W - gap * 4) / bars;
-        for (let i = 0; i < bars; i++) {
-            ctx.fillStyle = i < count ? "#c0392b" : "#e0e0e0";
-            ctx.fillRect(gap + i * (barW + gap), 0, barW, H);
-        }
-    },
-
-    // --- Canvas sizes and styles per type ---
-
-    _canvasSize: {
-        bar: { width: 300, height: 30 },
-        bars: { width: 60, height: 30 },
-    },
-
-    _canvasStyle: {
-        bar: "border-radius: 4px; background: #f0f0f0; margin: 10px;",
-        bars: "",
-    },
-
-    // --- Setup ---
-
-    setup(stream, canvasElement, type = "circle") {
+    setup(stream, canvas) {
         // Audio setup
         const audioCtx = new AudioContext();
         const analyser = audioCtx.createAnalyser();
@@ -44,37 +15,44 @@ var micVisualizer = {
         audioCtx.createMediaStreamSource(stream).connect(analyser);
         const freqData = new Uint8Array(analyser.frequencyBinCount);
 
-        // Pick draw function and apply canvas size
-        const drawFn = {
-            bar: this._drawBar,
-            bars: this._drawBars,
-        }[type] ?? this._drawCircle;
+        // Calculate canvas size
+        const totalWidth = this.bars * this.barWidth + (this.bars + 1) * this.barGap;
+        canvas.style.width = `${totalWidth}px`;
+        canvas.style.height = `${this.height}px`;
 
-        const size = this._canvasSize[type] ?? this._canvasSize.circle;
-        canvasElement.style.width = size.width + "px";
-        canvasElement.style.height = size.height + "px";
-        canvasElement.style.cssText += this._canvasStyle[type] ?? "";
-
-        // Mic icon
-        const icon = document.createElement("span");
-        icon.textContent = "\u{1F399}\u{FE0F}";
-        icon.style.cssText = "font-size:20px;";
-
-        // Container
+        // Container and mic icon
         const wrapper = document.createElement("div");
         wrapper.id = "mic-visualizer-wrapper";
-        canvasElement.replaceWith(wrapper);
-        wrapper.append(icon, canvasElement);
+        wrapper.innerHTML = `<span style="font-size:20px;">\u{1F399}\u{FE0F}</span>`;
+        canvas.replaceWith(wrapper);
+        wrapper.append(canvas);
 
         // Drawing
+        const ctx = canvas.getContext("2d");
         let raf = null;
         const draw = () => {
             raf = requestAnimationFrame(draw);
-            const ctx = canvasElement.getContext("2d");
-            const W = canvasElement.width = canvasElement.offsetWidth;
-            const H = canvasElement.height = canvasElement.offsetHeight;
-            ctx.clearRect(0, 0, W, H);
-            drawFn(ctx, W, H, analyser, freqData);
+
+            // DPR canvas sizing (to look crisp)
+            const dpr = window.devicePixelRatio || 1;
+            const W = canvas.width = canvas.offsetWidth * dpr;
+            const H = canvas.height = canvas.offsetHeight * dpr;
+
+            // Calculate active bars
+            analyser.getByteFrequencyData(freqData);
+            const rms = Math.sqrt(freqData.reduce((sum, v) => sum + v * v, 0) / freqData.length);
+            const count = rms >= this.start
+                ? Math.min(this.bars, Math.floor((rms - this.start) / this.step) + 1)
+                : 0;
+
+            // Render bars
+            const w = Math.round(this.barWidth * dpr);
+            const gap = Math.round(this.barGap * dpr);
+
+            for (let i = 0; i < this.bars; i++) {
+                ctx.fillStyle = i < count ? "#c0392b" : "#e0e0e0";
+                ctx.fillRect(Math.round(gap + i * (w + gap)), 0, w, H);
+            }
         };
 
         // Start and stop functions

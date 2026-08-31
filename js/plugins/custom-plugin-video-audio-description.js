@@ -226,16 +226,12 @@ var jsPsychVideoAudioDescription = (function (jspsych) {
                         video_timestamp: videoPlayer.currentTime,
                         audio_timestamp: (performance.now() - recordingStartTime) / 1000,
                     });
-                    console.log(events);
                 }
 
                 const toggleVideo = () => {
                     // If playing, pause
                     if (!videoPlayer.paused) {
                         if (videoPlayer.currentTime - lastPauseTime <= (trial.pause_cooldown / 1000)) {
-                            console.log(videoPlayer.currentTime)
-                            console.log(lastPauseTime)
-                            console.log(trial.pause_cooldown / 1000)
                             // Don't pause if too early
                             instructions.textContent = trial.early_pause_instruction_text;
                             setTimeout(() => {
